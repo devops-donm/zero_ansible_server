@@ -66,7 +66,7 @@
 
     - name: Copy SSH public key to the server
       ansible.builtin.copy:
-        src: "{{ ssh_key_path }}"
+        src: "{{ playbook_dir }}/../public_key/id_rsa.pub"  # Updated to reflect your directory structure
         dest: /home/{{ ansible_user_id }}/.ssh/authorized_keys
         owner: "{{ ansible_user_id }}"
         group: "{{ ansible_user_id }}"
