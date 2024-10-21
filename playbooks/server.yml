@@ -33,22 +33,24 @@
     - name: Allow HTTP traffic on port 80
       ansible.builtin.ufw:
         rule: allow
-        port: '80/tcp'
+        port: '80'
+        proto: 'tcp'  # Define the protocol explicitly
 
     - name: Allow HTTPS traffic on port 443
       ansible.builtin.ufw:
         rule: allow
-        port: '443/tcp'
+        port: '443'
+        proto: 'tcp'  # Define the protocol explicitly
 
     - name: Allow SSH traffic on port 22
       ansible.builtin.ufw:
         rule: allow
-        port: '22/tcp'
+        port: '22'
+        proto: 'tcp'  # Define the protocol explicitly
 
     - name: Enable UFW firewall
       ansible.builtin.ufw:
         state: enabled  # Enable the firewall
-        enable: yes
 
     # SSH Security configuration
     - name: Disable root login via SSH
@@ -72,12 +74,20 @@
         line: 'PubkeyAuthentication yes'  # Ensure key-based auth is enabled
         backup: yes
 
+    - name: Ensure .ssh directory exists
+      ansible.builtin.file:
+        path: /home/{{ ansible_user_id }}/.ssh
+        state: directory
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_id }}"
+        mode: '0700'  # Secure permissions for the .ssh directory
+
     - name: Update the authorized keys for the user
       ansible.builtin.copy:
         src: "{{ ssh_key_path }}"
-        dest: /home/{{ ansible_user }}/.ssh/authorized_keys
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
+        dest: /home/{{ ansible_user_id }}/.ssh/authorized_keys
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_id }}"
         mode: '0600'  # Secure permissions for the authorized_keys file
 
     - name: Restart SSH service to apply changes
