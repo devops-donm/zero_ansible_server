@@ -14,7 +14,8 @@
 
     - name: Upgrade all packages
       ansible.builtin.apt:
-        upgrade: dist  # Perform a distribution-level upgrade
+        upgrade: dist
+      register: upgrade_result  # Register the result of the package upgrade task
 
     - name: Remove unnecessary packages
       ansible.builtin.apt:
@@ -96,7 +97,8 @@
         name: ssh
         state: restarted  # Restart the SSH service to apply new configurations
 
-    - name: Reboot the server if needed
+    - name: Reboot the server if packages were updated
       ansible.builtin.reboot:
         msg: "Rebooting the server after updates if necessary"
-        reboot_timeout: 600  # Wait for 10 minutes for the server to come back up
+        reboot_timeout: 600
+      when: upgrade_result.changed  # Reboot only if the upgrade task made changes
