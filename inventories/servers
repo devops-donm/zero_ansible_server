@@ -1,0 +1,4 @@
+# servers - Ansible inventory file
+
+[ubuntu_servers]
+192.168.179.128

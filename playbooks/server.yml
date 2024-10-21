@@ -1,0 +1,91 @@
+---
+# Playbook to update Ubuntu 22.04 server, configure firewall, and secure SSH
+
+- name: Update, secure, and configure Ubuntu 22.04 server
+  hosts: ubuntu_servers
+  become: yes  # Ensure root privileges
+  vars:
+    ssh_key_path: "/path/to/your/public_key.pub"  # Update this path to the pre-generated SSH key
+
+  tasks:
+    - name: Update apt package list
+      ansible.builtin.apt:
+        update_cache: yes  # Refresh the apt package list
+
+    - name: Upgrade all packages
+      ansible.builtin.apt:
+        upgrade: dist  # Perform a distribution-level upgrade
+
+    - name: Remove unnecessary packages
+      ansible.builtin.apt:
+        autoremove: yes  # Automatically remove old packages no longer required
+
+    - name: Clean up package cache
+      ansible.builtin.apt:
+        autoclean: yes  # Clean up apt cache
+
+    # UFW Firewall configuration
+    - name: Install UFW if not already installed
+      ansible.builtin.apt:
+        name: ufw
+        state: present  # Ensure UFW is installed
+
+    - name: Allow HTTP traffic on port 80
+      ansible.builtin.ufw:
+        rule: allow
+        port: '80/tcp'
+
+    - name: Allow HTTPS traffic on port 443
+      ansible.builtin.ufw:
+        rule: allow
+        port: '443/tcp'
+
+    - name: Allow SSH traffic on port 22
+      ansible.builtin.ufw:
+        rule: allow
+        port: '22/tcp'
+
+    - name: Enable UFW firewall
+      ansible.builtin.ufw:
+        state: enabled  # Enable the firewall
+        enable: yes
+
+    # SSH Security configuration
+    - name: Disable root login via SSH
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PermitRootLogin'
+        line: 'PermitRootLogin no'  # Disable root login
+        backup: yes
+
+    - name: Disable password authentication
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PasswordAuthentication'
+        line: 'PasswordAuthentication no'  # Enforce SSH key-based auth
+        backup: yes
+
+    - name: Ensure public key authentication is enabled
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PubkeyAuthentication'
+        line: 'PubkeyAuthentication yes'  # Ensure key-based auth is enabled
+        backup: yes
+
+    - name: Update the authorized keys for the user
+      ansible.builtin.copy:
+        src: "{{ ssh_key_path }}"
+        dest: /home/{{ ansible_user }}/.ssh/authorized_keys
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0600'  # Secure permissions for the authorized_keys file
+
+    - name: Restart SSH service to apply changes
+      ansible.builtin.service:
+        name: ssh
+        state: restarted  # Restart the SSH service to apply new configurations
+
+    - name: Reboot the server if needed
+      ansible.builtin.reboot:
+        msg: "Rebooting the server after updates if necessary"
+        reboot_timeout: 600  # Wait for 10 minutes for the server to come back up
