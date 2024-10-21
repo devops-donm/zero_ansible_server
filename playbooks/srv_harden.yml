@@ -5,7 +5,7 @@
   hosts: ubuntu_servers
   become: yes  # Ensure root privileges
   vars:
-    ssh_key_path: "public_key/id_rsa.pub"  # Update this path to the pre-generated SSH key
+    ssh_key_path: "public_key/id_rsa.pub"
 
   tasks:
     - name: Update apt package list
