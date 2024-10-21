@@ -8,6 +8,7 @@
     ssh_key_path: "public_key/id_rsa.pub"
 
   tasks:
+    # Step 1: Initial server update and package installation
     - name: Update apt package list
       ansible.builtin.apt:
         update_cache: yes
@@ -25,7 +26,7 @@
       ansible.builtin.apt:
         autoclean: yes
 
-    # UFW Firewall configuration
+    # Step 2: UFW Firewall configuration
     - name: Install UFW if not already installed
       ansible.builtin.apt:
         name: ufw
@@ -53,7 +54,25 @@
       ansible.builtin.ufw:
         state: enabled
 
-    # SSH Security configuration
+    # Step 3: Configure SSH
+    # 3.1: Copy SSH key to server and disable password authentication
+    - name: Ensure the .ssh directory exists
+      ansible.builtin.file:
+        path: /home/{{ ansible_user_id }}/.ssh
+        state: directory
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_id }}"
+        mode: '0700'
+
+    - name: Copy SSH public key to the server
+      ansible.builtin.copy:
+        src: "{{ ssh_key_path }}"
+        dest: /home/{{ ansible_user_id }}/.ssh/authorized_keys
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_id }}"
+        mode: '0600'
+      when: ansible_ssh_pass is defined
+
     - name: Disable root login via SSH
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
@@ -61,12 +80,13 @@
         line: 'PermitRootLogin no'
         backup: yes
 
-    - name: Disable password authentication
+    - name: Disable password authentication (after SSH key is copied)
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         regexp: '^PasswordAuthentication'
         line: 'PasswordAuthentication no'
         backup: yes
+      when: ansible_ssh_pass is defined
 
     - name: Ensure public key authentication is enabled
       ansible.builtin.lineinfile:
@@ -75,35 +95,19 @@
         line: 'PubkeyAuthentication yes'
         backup: yes
 
-    - name: Ensure .ssh directory exists
-      ansible.builtin.file:
-        path: /home/{{ ansible_user_id }}/.ssh
-        state: directory
-        owner: "{{ ansible_user_id }}"
-        group: "{{ ansible_user_id }}"
-        mode: '0700'
-
-    - name: Update the authorized keys for the user
-      ansible.builtin.copy:
-        src: "{{ playbook_dir }}/../public_key/id_rsa.pub"
-        dest: /home/{{ ansible_user_id }}/.ssh/authorized_keys
-        owner: "{{ ansible_user_id }}"
-        group: "{{ ansible_user_id }}"
-        mode: '0600'
-        remote_src: no
-
     - name: Restart SSH service to apply changes
       ansible.builtin.service:
         name: ssh
         state: restarted
 
-    - name: Reboot the server if packages were updated
+    # Step 4: Reboot the server if packages were updated
+    - name: Reboot the server after updates (if necessary)
       ansible.builtin.reboot:
-        msg: "Rebooting the server after updates if necessary"
+        msg: "Rebooting the server after updates"
         reboot_timeout: 600
       when: upgrade_result.changed
 
-    # Docker and Docker Compose installation
+    # Step 5: Install Docker and Docker Compose
     - name: Install dependencies for Docker
       ansible.builtin.apt:
         name:
