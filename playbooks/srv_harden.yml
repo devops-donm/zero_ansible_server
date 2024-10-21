@@ -1,78 +1,78 @@
 ---
-# Playbook to update Ubuntu 22.04 server, configure firewall, and secure SSH
+# Playbook to update Ubuntu 22.04 server, configure firewall, secure SSH, and install Docker
 
-- name: Update, secure, and configure Ubuntu 22.04 server
+- name: Update, secure, and configure Ubuntu 22.04 server, install Docker and Docker Compose
   hosts: ubuntu_servers
-  become: yes  # Ensure root privileges
+  become: yes
   vars:
     ssh_key_path: "public_key/id_rsa.pub"
 
   tasks:
     - name: Update apt package list
       ansible.builtin.apt:
-        update_cache: yes  # Refresh the apt package list
+        update_cache: yes
 
     - name: Upgrade all packages
       ansible.builtin.apt:
         upgrade: dist
-      register: upgrade_result  # Register the result of the package upgrade task
+      register: upgrade_result
 
     - name: Remove unnecessary packages
       ansible.builtin.apt:
-        autoremove: yes  # Automatically remove old packages no longer required
+        autoremove: yes
 
     - name: Clean up package cache
       ansible.builtin.apt:
-        autoclean: yes  # Clean up apt cache
+        autoclean: yes
 
     # UFW Firewall configuration
     - name: Install UFW if not already installed
       ansible.builtin.apt:
         name: ufw
-        state: present  # Ensure UFW is installed
+        state: present
 
     - name: Allow HTTP traffic on port 80
       ansible.builtin.ufw:
         rule: allow
         port: '80'
-        proto: 'tcp'  # Define the protocol explicitly
+        proto: 'tcp'
 
     - name: Allow HTTPS traffic on port 443
       ansible.builtin.ufw:
         rule: allow
         port: '443'
-        proto: 'tcp'  # Define the protocol explicitly
+        proto: 'tcp'
 
     - name: Allow SSH traffic on port 22
       ansible.builtin.ufw:
         rule: allow
         port: '22'
-        proto: 'tcp'  # Define the protocol explicitly
+        proto: 'tcp'
 
     - name: Enable UFW firewall
       ansible.builtin.ufw:
-        state: enabled  # Enable the firewall
+        state: enabled
 
     # SSH Security configuration
     - name: Disable root login via SSH
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         regexp: '^PermitRootLogin'
-        line: 'PermitRootLogin no'  # Disable root login
+        line: 'PermitRootLogin no'
         backup: yes
 
     - name: Disable password authentication
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         regexp: '^PasswordAuthentication'
-        line: 'PasswordAuthentication no'  # Enforce SSH key-based auth
+        line: 'PasswordAuthentication no'
         backup: yes
 
     - name: Ensure public key authentication is enabled
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         regexp: '^PubkeyAuthentication'
-        line: 'PubkeyAuthentication yes'  # Ensure key-based auth is enabled
+        line: 'PubkeyAuthentication yes'
         backup: yes
 
     - name: Ensure .ssh directory exists
@@ -81,24 +81,71 @@
         state: directory
         owner: "{{ ansible_user_id }}"
         group: "{{ ansible_user_id }}"
-        mode: '0700'  # Secure permissions for the .ssh directory
+        mode: '0700'
 
     - name: Update the authorized keys for the user
       ansible.builtin.copy:
-        src: "{{ playbook_dir }}/../public_key/id_rsa.pub"  # Correct path to the public key file
+        src: "{{ playbook_dir }}/../public_key/id_rsa.pub"
         dest: /home/{{ ansible_user_id }}/.ssh/authorized_keys
         owner: "{{ ansible_user_id }}"
         group: "{{ ansible_user_id }}"
         mode: '0600'
-        remote_src: no  # Ensure it's copied from the controller machine
+        remote_src: no
 
     - name: Restart SSH service to apply changes
       ansible.builtin.service:
         name: ssh
-        state: restarted  # Restart the SSH service to apply new configurations
+        state: restarted
 
     - name: Reboot the server if packages were updated
       ansible.builtin.reboot:
         msg: "Rebooting the server after updates if necessary"
         reboot_timeout: 600
-      when: upgrade_result.changed  # Reboot only if the upgrade task made changes
+      when: upgrade_result.changed
+
+    # Docker and Docker Compose installation
+    - name: Install dependencies for Docker
+      ansible.builtin.apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+
+    - name: Add Docker's official GPG key
+      ansible.builtin.apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker APT repository
+      ansible.builtin.apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+        state: present
+
+    - name: Update apt package list after adding Docker repo
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install Docker
+      ansible.builtin.apt:
+        name: docker-ce
+        state: latest
+
+    - name: Install Docker Compose
+      ansible.builtin.get_url:
+        url: https://github.com/docker/compose/releases/download/v2.29.7/docker-compose-linux-x86_64
+        dest: /usr/local/bin/docker-compose
+        mode: '0755'  # Set executable permissions
+
+    - name: Ensure Docker service is enabled and started
+      ansible.builtin.systemd:
+        name: docker
+        enabled: yes
+        state: started
+
+    - name: Add user to the docker group
+      ansible.builtin.user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
