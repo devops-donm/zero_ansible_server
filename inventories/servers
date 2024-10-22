@@ -1,4 +1,5 @@
 # servers - Ansible inventory file
 
-[ubuntu_servers]
-192.168.179.128
+[servers]
+server1 ansible_host=192.168.179.128 ansible_user=user01
+server2 ansible_host=54.234.97.148 ansible_user=ubuntu

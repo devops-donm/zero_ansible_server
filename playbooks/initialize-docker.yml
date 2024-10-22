@@ -1,6 +1,6 @@
 ---
 - name: Setup and run Docker Compose in the background
-  hosts: all
+  hosts: ubuntu_servers
   become: true
   tasks:
     - name: Ensure Docker is running

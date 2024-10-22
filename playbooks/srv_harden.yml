@@ -5,7 +5,6 @@
   hosts: ubuntu_servers
   vars:
     ssh_key_path: "public_key/id_rsa.pub"
-    ansible_user: "user01"
 
   tasks:
     # Initial server update and package installation
@@ -72,13 +71,16 @@
         group: "{{ ansible_user }}"
         mode: '0700'
 
-    - name: Copy SSH public key to the server for ansible user
-      ansible.builtin.copy:
-        src: "{{ playbook_dir }}/../public_key/id_rsa.pub"
-        dest: /home/{{ ansible_user }}/.ssh/authorized_keys
+    - name: Append SSH public key to the authorized_keys file
+      ansible.builtin.lineinfile:
+        path: /home/{{ ansible_user }}/.ssh/authorized_keys
+        line: "{{ lookup('file', playbook_dir + '/../public_key/id_rsa.pub') }}"
+        create: yes
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
         mode: '0600'
+        state: present
+        insertafter: EO
 
     - name: Disable root login via SSH
       ansible.builtin.lineinfile:
