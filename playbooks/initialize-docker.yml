@@ -15,10 +15,10 @@
         state: directory
         mode: '0755'
 
-    - name: Copy docker-compose.yml to remote host
+    - name: Copy Docker-compose.yml to remote host
       ansible.builtin.copy:
         src: docker/Docker-compose.yml
-        dest: /opt/my_project/docker/docker-compose.yml
+        dest: /opt/my_project/docker/Docker-compose.yml
 
     - name: Copy nginx configuration to remote host
       ansible.builtin.copy:
@@ -33,6 +33,6 @@
 
     - name: Build and start Docker Compose in detached mode
       ansible.builtin.shell: |
-        docker-compose -f /opt/my_project/docker/docker-compose.yml up -d
+        docker compose -f /opt/my_project/docker/Docker-compose.yml up -d
       args:
         chdir: /opt/my_project/docker/
