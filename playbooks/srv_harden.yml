@@ -2,7 +2,7 @@
 # Playbook to update Ubuntu 22.04 server, configure firewall, secure SSH, and install Docker
 
 - name: Update, secure, and configure Ubuntu 22.04 server, install Docker and Docker Compose
-  hosts: ubuntu_servers
+  hosts: servers
   vars:
     ssh_key_path: "public_key/id_rsa.pub"
 
