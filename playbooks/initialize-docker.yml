@@ -11,28 +11,28 @@
 
     - name: Create project directory on remote host
       ansible.builtin.file:
-        path: /opt/my_project/docker
+        path: /opt/docker
         state: directory
         mode: '0755'
 
     - name: Copy Docker-compose.yml to remote host
       ansible.builtin.copy:
-        src: docker/Docker-compose.yml
-        dest: /opt/my_project/docker/Docker-compose.yml
+        src: ./docker/Docker-compose.yml
+        dest: /opt/docker/Docker-compose.yml
 
     - name: Copy nginx configuration to remote host
       ansible.builtin.copy:
-        src: docker/nginx/default.conf
-        dest: /opt/my_project/docker/nginx/default.conf
+        src: ./docker/nginx/default.conf
+        dest: /opt/docker/nginx/default.conf
 
     - name: Copy application files to remote host
       ansible.builtin.copy:
-        src: docker/dashboard/
-        dest: /opt/my_project/docker/dashboard/
+        src: ./docker/dashboard/
+        dest: /opt/docker/dashboard/
         mode: '0755'
 
     - name: Build and start Docker Compose in detached mode
       ansible.builtin.shell: |
-        docker compose -f /opt/my_project/docker/Docker-compose.yml up -d
+        docker compose -f /opt/docker/Docker-compose.yml up -d
       args:
-        chdir: /opt/my_project/docker/
+        chdir: /opt/docker/
