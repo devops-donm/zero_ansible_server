@@ -188,6 +188,13 @@
         append: yes
       become: yes
 
+    - name: Allow passwordless sudo for ansible user
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers.d/{{ ansible_user }}
+        create: yes
+        line: "{{ ansible_user }} ALL=(ALL) NOPASSWD: ALL"
+        mode: '0440'
+
     # Reboot the server if packages were updated
     - name: Reboot the server after updates (if necessary)
       ansible.builtin.reboot:
