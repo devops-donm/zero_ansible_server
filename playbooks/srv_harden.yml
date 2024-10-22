@@ -11,19 +11,23 @@
     - name: Update apt package list
       ansible.builtin.apt:
         update_cache: yes
+      become: yes
 
     - name: Upgrade all packages
       ansible.builtin.apt:
         upgrade: dist
+      become: yes
       register: upgrade_result
 
     - name: Remove unnecessary packages
       ansible.builtin.apt:
         autoremove: yes
+      become: yes
 
     - name: Clean up package cache
       ansible.builtin.apt:
         autoclean: yes
+      become: yes
 
     # UFW Firewall configuration
     - name: Install UFW if not already installed
