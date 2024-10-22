@@ -5,6 +5,7 @@
   hosts: ubuntu_servers
   vars:
     ssh_key_path: "public_key/id_rsa.pub"
+    ansible_user: "user01"
 
   tasks:
     # Initial server update and package installation
