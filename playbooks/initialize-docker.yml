@@ -1,6 +1,7 @@
 ---
 - name: Setup and run Docker Compose in the background
   hosts: all
+  become: true
   tasks:
     - name: Ensure Docker is running
       ansible.builtin.service:

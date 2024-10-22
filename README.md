@@ -28,6 +28,14 @@ This will prompt for the SSH password and sudo password. After the first run, ke
 - Installs Docker-Compose (v2.29.7)
 - Reboots the server if required
 
-## Subsequent runs with key-based authentication:
+## Configure base Docker Compose ecosystem:
 After the server hardening playbook has been run you will only need to run the below command.
-`ansible-playbook -i inventories/servers playbooks/srv_harden.yml --ask-become-pass`
+`ansible-playbook -i inventories/servers playbooks/initialize-docker.yml --ask-become-pass`
+
+### Actions on target
+- copies the required initial files/folders to /opt/my_project
+- builds the containers and runs them in the background
+
+This build does two things
+1. Creates an NGINX container acting as a reverse proxy for your future applications
+2. Creates a flask container to act as a dashboard for your applications. It is not required to use this.
