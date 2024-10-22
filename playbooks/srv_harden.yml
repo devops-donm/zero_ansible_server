@@ -3,7 +3,6 @@
 
 - name: Update, secure, and configure Ubuntu 22.04 server, install Docker and Docker Compose
   hosts: ubuntu_servers
-  become: yes
   vars:
     ssh_key_path: "public_key/id_rsa.pub"
 
@@ -54,24 +53,22 @@
       ansible.builtin.ufw:
         state: enabled
 
-    # Configure SSH
-    # Copy SSH key to server and disable password authentication
-    - name: Ensure the .ssh directory exists
+    # Configure SSH for user01
+    - name: Ensure the .ssh directory exists for ansible user
       ansible.builtin.file:
-        path: /home/{{ ansible_user_id }}/.ssh
+        path: /home/{{ ansible_user }}/.ssh
         state: directory
-        owner: "{{ ansible_user_id }}"
-        group: "{{ ansible_user_id }}"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
         mode: '0700'
 
-    - name: Copy SSH public key to the server
+    - name: Copy SSH public key to the server for ansible user
       ansible.builtin.copy:
-        src: "{{ playbook_dir }}/../public_key/id_rsa.pub"  # Updated to reflect your directory structure
-        dest: /home/{{ ansible_user_id }}/.ssh/authorized_keys
-        owner: "{{ ansible_user_id }}"
-        group: "{{ ansible_user_id }}"
+        src: "{{ playbook_dir }}/../public_key/id_rsa.pub"
+        dest: /home/{{ ansible_user }}/.ssh/authorized_keys
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
         mode: '0600'
-      when: ansible_ssh_pass is defined
 
     - name: Disable root login via SSH
       ansible.builtin.lineinfile:
@@ -79,6 +76,7 @@
         regexp: '^PermitRootLogin'
         line: 'PermitRootLogin no'
         backup: yes
+      become: yes  # Only become root for editing system files
 
     - name: Disable password authentication (after SSH key is copied)
       ansible.builtin.lineinfile:
@@ -86,7 +84,7 @@
         regexp: '^PasswordAuthentication'
         line: 'PasswordAuthentication no'
         backup: yes
-      when: ansible_ssh_pass is defined
+      become: yes  # Only become root for editing system files
 
     - name: Ensure public key authentication is enabled
       ansible.builtin.lineinfile:
@@ -94,11 +92,14 @@
         regexp: '^PubkeyAuthentication'
         line: 'PubkeyAuthentication yes'
         backup: yes
+      become: yes  # Only become root for editing system files
 
     - name: Restart SSH service to apply changes
       ansible.builtin.service:
         name: ssh
         state: restarted
+      become: yes  # Root permissions required to restart the service
+
 
     # Install Docker and Docker Compose
     - name: Install dependencies for Docker
@@ -133,7 +134,7 @@
       ansible.builtin.get_url:
         url: https://github.com/docker/compose/releases/download/v2.29.7/docker-compose-linux-x86_64
         dest: /usr/local/bin/docker-compose
-        mode: '0755'  # Set executable permissions
+        mode: '0755'
 
     - name: Ensure Docker service is enabled and started
       ansible.builtin.systemd:
