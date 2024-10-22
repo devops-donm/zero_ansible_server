@@ -1,5 +1,5 @@
 services:
-  flask_app_01:
+  dashboard:
     build:
       context: ./dashboard
     container_name: dashboard
