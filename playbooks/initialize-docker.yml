@@ -17,17 +17,17 @@
 
     - name: Copy Docker-compose.yml to remote host
       ansible.builtin.copy:
-        src: ./docker/Docker-compose.yml
+        src: ../docker/Docker-compose.yml
         dest: /opt/docker/Docker-compose.yml
 
     - name: Copy nginx configuration to remote host
       ansible.builtin.copy:
-        src: ./docker/nginx/default.conf
+        src: ../docker/nginx/default.conf
         dest: /opt/docker/nginx/default.conf
 
     - name: Copy application files to remote host
       ansible.builtin.copy:
-        src: ./docker/dashboard/
+        src: ../docker/dashboard/
         dest: /opt/docker/dashboard/
         mode: '0755'
 
