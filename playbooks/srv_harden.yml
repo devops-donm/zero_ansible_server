@@ -104,6 +104,19 @@
         backup: yes
       become: yes
 
+    - name: Remove all configuration files in /etc/ssh/sshd_config.d
+      ansible.builtin.file:
+        path: /etc/ssh/sshd_config.d
+        state: absent
+      become: yes
+
+    - name: Recreate /etc/ssh/sshd_config.d directory
+      ansible.builtin.file:
+        path: /etc/ssh/sshd_config.d
+        state: directory
+        mode: '0755'
+      become: yes
+
     - name: Restart SSH service to apply changes
       ansible.builtin.service:
         name: ssh
