@@ -6,8 +6,9 @@ sudo apt install ansible -y
 ```
 
 ## Initial Assumptions
-1. The server is running ubuntu 22.04 LTS
-2. The server you want to manage has a user01 in the sudoers group
+1. The target server is running ubuntu 22.04 LTS
+2. The target server has a user01 in the sudoers group
+3. The ansible server has a copy of the private ssh key stored in /home/user01/.ssh
 
 ## Initial run with password:
 `cd ansible`
