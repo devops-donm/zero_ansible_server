@@ -1,7 +1,8 @@
 services:
   dashboard:
     build:
-      context: ./dashboard
+      context: .
+      dockerfile: /opt/docker/dashboard/Dockerfile
     container_name: dashboard
     ports:
       - "5000:5000"
@@ -13,7 +14,7 @@ services:
 
   nginx:
     build:
-      context: ./nginx
+      context: /opt/docker/nginx
     container_name: nginx
     ports:
       - "80:80"
