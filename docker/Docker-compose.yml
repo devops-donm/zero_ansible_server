@@ -1,0 +1,32 @@
+services:
+  flask_app_01:
+    build:
+      context: ./dashboard
+    container_name: dashboard
+    ports:
+      - "5000:5000"
+    command: gunicorn --bind 0.0.0.0:5000 --workers 3 app:app
+    restart: always
+    networks:
+      app_network:
+        ipv4_address: 172.18.0.2
+
+  nginx:
+    build:
+      context: ./nginx
+    container_name: nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - dashboard
+
+    networks:
+      - app_network
+    restart: always
+
+networks:
+  app_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
