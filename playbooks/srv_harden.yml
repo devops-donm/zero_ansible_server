@@ -170,8 +170,8 @@
         dest: /usr/local/bin/docker-compose
         mode: '0755'
       become: yes
-      retries: 3   # Number of retries if the download fails
-      delay: 10    # Wait time between retries (in seconds)
+      retries: 3
+      delay: 10
       when: not docker_compose_installed.stat.exists
 
     - name: Ensure Docker service is enabled and started
