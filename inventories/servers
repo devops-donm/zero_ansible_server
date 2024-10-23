@@ -1,5 +1,4 @@
 # servers - Ansible inventory file
 
-[servers]
-server1 ansible_host=192.168.179.128 ansible_user=user01 ansible_ssh_private_key_file=~/.ssh/id_rsa
-server2 ansible_host=54.236.19.62 ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/testing.pem
+# ["server1"]
+# server1 ansible_host=192.168.179.128 ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/testing.pem
