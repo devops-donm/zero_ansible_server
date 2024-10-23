@@ -48,6 +48,7 @@ AWS.
 
 ## Configure base Docker Compose ecosystem:
 After the server hardening playbook has been run you will only need to run the below command.
+
 `ansible-playbook -i inventories/servers playbooks/initialize-docker.yml --ask-become-pass`
 
 ### Actions on target
