@@ -10,11 +10,10 @@ sudo apt install ansible -y
 2. The target server has a user01 in the sudoers group
 3. The ansible server ssh keys are located in /home/user01/.ssh
     
-`ssh-keygen -t rsa -b 4096 -C "your_email@example.com"`
-    
-    - No passphrase
-    - default location
-    
+```ssh-keygen -t rsa -b 4096 -C "your_email@example.com"  
+# No passphrase
+# default location
+```
 4. ./ansible.cfg - verify the name and path to the private key
 5. make sure the permissions for the private key are set to 400
 6. ./inventories/servers - update the server's ip address and username
