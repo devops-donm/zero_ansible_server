@@ -16,6 +16,12 @@ sudo apt install ansible -y
 5. make sure the permissions for the private key are set to 400
 6. ./inventories/servers - update the server's ip address and username
 
+inventory/servers config format.
+```
+["server1"]
+server1 ansible_host=192.168.179.128 ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/testing.pem
+```
+
 # Usage
 ## Initial run with password:
 
