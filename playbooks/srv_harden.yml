@@ -4,7 +4,7 @@
 - name: Update, secure, and configure Ubuntu 22.04 server, install Docker and Docker Compose
   hosts: servers
   vars:
-    ssh_key_path: "public_key/id_rsa.pub"
+    ssh_key_path: "~/.ssh/id_rsa.pub"
 
   tasks:
     # Initial server update and package installation
@@ -74,7 +74,7 @@
     - name: Append SSH public key to the authorized_keys file
       ansible.builtin.lineinfile:
         path: /home/{{ ansible_user }}/.ssh/authorized_keys
-        line: "{{ lookup('file', playbook_dir + '/../public_key/id_rsa.pub') }}"
+        line: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
         create: yes
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
