@@ -194,6 +194,7 @@
         create: yes
         line: "{{ ansible_user }} ALL=(ALL) NOPASSWD: ALL"
         mode: '0440'
+      become: yes
 
     # Reboot the server if packages were updated
     - name: Reboot the server after updates (if necessary)
