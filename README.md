@@ -32,7 +32,7 @@ Replace user with your username and managed_node_ip with the IP address of the m
 inventory/servers config format.
 ```
 ["server1"]
-server1 ansible_host=192.168.179.128 ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/testing.pem
+server1 ansible_host=192.168.179.128
 ```
 
 ## Test Connectivity to Managed Nodes
