@@ -51,7 +51,7 @@ This option is typically for virtual machines or servers that are provided with 
 
 `ansible-playbook playbooks/srv_harden.yml --ask-pass --ask-become-pass`
 
-### Actions on target
+### Actions on node
 - Update / Upgrade packages
 - Configure and enable UFW firewall (SSH, HTTP, HTTPS)
 - Locks down SSH config and sets public key authentication
