@@ -36,10 +36,20 @@ git clone https://github.com/devops-donm/zero_ansible_server.git
 
 ## Set Up the Inventory File
 inventory/servers config format.
+
+1. Add your indivindual servers.
 ```
-["server1"]
+[server1]
 server1 ansible_host=192.168.179.128
 ```
+
+2. Add your individual servers to the servers group.
+```
+[servers]
+server1
+```
+
+3. Create any additional groups as needed. Examples: OS, Region, Purpose.
 
 ## Test Connectivity to Managed Nodes
 ```
