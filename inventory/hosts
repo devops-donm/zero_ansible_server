@@ -1,4 +1,8 @@
 # servers - Ansible inventory file
-
-[server1]
+#
+# Add your individual servers into the servers group or create new groups as needed
+# [servers]
+# server1
+#
+# [server1]
 # server1 ansible_host=192.168.179.128
