@@ -65,7 +65,7 @@ ansible -i inventory/hosts all -m ping
 
 This option is typically for virtual machines or servers that are provided with a password.
 
-`ansible-playbook playbooks/srv_harden.yml --ask-pass --ask-become-pass`
+`ansible-playbook playbooks/srv_harden.yml --ask-become-pass`
 
 ### Actions on node
 - Update / Upgrade packages
