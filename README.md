@@ -29,6 +29,11 @@ ssh-copy-id user@managed_node_ip
 ```
 Replace user with your username and managed_node_ip with the IP address of the managed node.
 
+## Clone this repo to your Control Server
+```
+git clone https://github.com/devops-donm/zero_ansible_server.git
+```
+
 ## Set Up the Inventory File
 inventory/servers config format.
 ```
