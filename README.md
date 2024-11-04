@@ -19,7 +19,7 @@ ansible --version
 ### Generate the key
 ```
 ssh-keygen -t rsa -b 4096 -C "ansible@example.com"
-chmod 400 ~/.ssh/id*
+chmod 400 ~/.ssh/id_rsa*
 ```
 
 ### Copy the public key to each managed nodes
