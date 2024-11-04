@@ -56,7 +56,7 @@ server1
 ansible -i inventory/hosts all -m ping
 ```
 
-## Ansible COnfiguration File (ansible.cfg)
+## Ansible Configuration File (ansible.cfg)
 - Verify remote_user
 
 
