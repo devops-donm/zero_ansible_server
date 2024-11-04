@@ -37,7 +37,7 @@ git clone https://github.com/devops-donm/zero_ansible_server.git
 ## Set Up the Inventory File
 inventory/servers config format.
 
-1. Add your indivindual servers.
+1. Add your individual servers.
 ```
 [server1]
 server1 ansible_host=192.168.179.128
