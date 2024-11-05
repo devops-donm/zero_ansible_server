@@ -61,9 +61,7 @@ ansible -i inventory/hosts all -m ping
 
 
 # Usage
-## Initial run with password:
-
-This option is typically for virtual machines or servers that are provided with a password.
+## Hardening Playbook:
 
 `ansible-playbook playbooks/srv_harden.yml --ask-become-pass`
 
@@ -74,3 +72,13 @@ This option is typically for virtual machines or servers that are provided with 
 - Install and configure Docker (latest stable)
 - Installs Docker-Compose (v2.29.7)
 - Reboots the server if required
+
+## Nginx Container Playbook:
+
+`ansible-playbook playbooks/nginx_docker.yml`
+
+### Actions on node
+- Clone latest (main) version of NGINX repo
+https://github.com/devops-donm/one_nginx_docker.git
+- Stop and remove the current container
+- Create a new NGINX container
