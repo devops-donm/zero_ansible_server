@@ -34,6 +34,9 @@ Replace user with your username and managed_node_ip with the IP address of the m
 git clone https://github.com/devops-donm/zero_ansible_server.git
 ```
 
+## Ansible Configuration File (ansible.cfg)
+- Verify remote_user
+
 ## Set Up the Inventory File
 inventory/servers config format.
 
@@ -53,12 +56,12 @@ server1
 
 ## Test Connectivity to Managed Nodes
 ```
-ansible -i inventory/hosts all -m ping
+ansible -i inventory/hosts all -m ping --ask-pass
 ```
 
-## Ansible Configuration File (ansible.cfg)
-- Verify remote_user
-
+## Troubleshooting
+- Validate variables in ansible.cfg
+- Verify data / format in inventory/hosts file
 
 # Usage
 ## Hardening Playbook:

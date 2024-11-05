@@ -1,0 +1,49 @@
+---
+- name: Generate SSL Certificate and Key
+  hosts: localhost  # Specify target host or 'localhost' if local
+  become: yes
+  vars:
+    domain: "example.com"                 # Replace with your domain name
+    cert_dir: "./certs"                   # Directory to store the certificate
+    key_file: "{{ cert_dir }}/{{ domain }}.key"
+    cert_file: "{{ cert_dir }}/{{ domain }}.crt"
+    days_valid: 365                       # Certificate validity in days
+    encryption_passphrase: "your_password_here"  # Password for the private key
+
+  tasks:
+    - name: Ensure certificate directory exists
+      file:
+        path: "{{ cert_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Generate private key
+      command: >
+        openssl genpkey -algorithm RSA -out "{{ key_file }}" -aes256
+        -pass pass:"{{ encryption_passphrase }}"
+      args:
+        creates: "{{ key_file }}"
+      register: gen_key
+      ignore_errors: yes
+
+    - name: Remove encryption for the private key if desired
+      command: >
+        openssl rsa -in "{{ key_file }}" -out "{{ key_file | regex_replace('\.key$', '_unencrypted.key') }}"
+      when: not encryption_passphrase
+      args:
+        creates: "{{ key_file | regex_replace('\.key$', '_unencrypted.key') }}"
+      register: unencrypted_key
+      ignore_errors: yes
+
+    - name: Generate self-signed certificate
+      command: >
+        openssl req -new -x509 -key "{{ key_file }}" -out "{{ cert_file }}"
+        -days "{{ days_valid }}"
+        -subj "/C=US/ST=State/L=City/O=Organization/OU=Org Unit/CN={{ domain }}"
+      args:
+        creates: "{{ cert_file }}"
+      register: gen_cert
+
+    - name: Display result
+      debug:
+        msg: "Certificate and key generated in {{ cert_dir }}"

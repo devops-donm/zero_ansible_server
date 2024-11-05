@@ -1,0 +1,27 @@
+---
+- name: Link Nginx Configuration Files
+  hosts: localhost  # Specify target host
+  become: yes
+  vars:
+    available_dir: "/etc/nginx/sites-available"
+    enabled_dir: "/etc/nginx/sites-enabled"
+
+  tasks:
+    - name: Ensure sites-enabled directory exists
+      file:
+        path: "{{ enabled_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Create symbolic links for Nginx configuration files
+      file:
+        src: "{{ item }}"
+        dest: "{{ enabled_dir }}/{{ item | basename }}"
+        state: link
+      with_fileglob:
+        - "{{ available_dir }}/*"
+      register: symlinks
+
+    - name: Display success message
+      debug:
+        msg: "Symbolic links created for all configuration files in {{ available_dir }}."
