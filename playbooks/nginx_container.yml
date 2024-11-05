@@ -1,29 +1,50 @@
 ---
-- name: Deploy Nginx Docker Container
-  hosts: servers
-  become: true
-  vars:
-    repo_url: "https://github.com/devops-donm/nginx_container.git"
-    repo_path: "/opt/nginx_container"
-  tasks:
-
-    # Step 2: Download the GitHub repository
-    - name: Clone the GitHub repository
-      ansible.builtin.git:
-        repo: "{{ repo_url }}"
-        dest: "{{ repo_path }}"
-        version: main  # Specify branch if needed
-        force: yes  # Force re-download if repo already exists
-
-    # Step 3: Stop and remove any existing container
-    - name: Stop existing Docker containers
-      ansible.builtin.command:
-        cmd: docker-compose down
-        chdir: "{{ repo_path }}"
-      ignore_errors: true  # Ignore errors if container is not running
-
-    # Step 4: Create a new Docker container
-    - name: Build and start new Docker containers
-      ansible.builtin.command:
-        cmd: docker-compose up -d --build
-        chdir: "{{ repo_path }}"
+  - name: Deploy Nginx Docker Container
+    hosts: servers
+    become: true
+    vars:
+      repo_url: "https://github.com/devops-donm/nginx_container.git"
+      repo_path: "/opt/nginx_container"
+    tasks:
+  
+      # Step 1: Create directories for configuration files and SSL Certificates
+      - name: Create NGINX Configuration Directory
+        file:
+          path: "/opt/nginx/configs"
+          state: directory
+          mode: '0755'
+      
+      - name: Create NGINX SSL Certificates Directory
+        file:
+          path: "/opt/nginx/certs"
+          state: directory
+          mode: '0755'
+  
+      # Step 2: Download the GitHub repository if not already present
+      - name: Clone the GitHub repository
+        ansible.builtin.git:
+          repo: "{{ repo_url }}"
+          dest: "{{ repo_path }}"
+          version: main  # Specify branch if needed
+          force: yes  # Force re-download if repo already exists
+  
+      # Step 3: Stop and remove any existing container using docker_compose module
+      - name: Stop existing Docker containers
+        community.docker.docker_compose:
+          project_src: "{{ repo_path }}"
+          state: absent
+        ignore_errors: true  # Ignore errors if container is not running
+  
+      # Step 4: Build and start the new Docker container using docker_compose module
+      - name: Build and start new Docker containers
+        community.docker.docker_compose:
+          project_src: "{{ repo_path }}"
+          state: present
+          build: yes  # Build the container from scratch
+  
+    handlers:
+      - name: Restart Docker
+        service:
+          name: docker
+          state: restarted
+  
