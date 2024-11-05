@@ -81,7 +81,7 @@ After running the hardening paybook you will only be asked for the sudoers passw
 
 ## Nginx Container Playbook:
 
-`ansible-playbook playbooks/nginx_docker.yml`
+`ansible-playbook playbooks/nginx_container.yml`
 
 ### Actions on node
 - Clone latest (main) version of NGINX repo
