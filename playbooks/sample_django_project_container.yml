@@ -1,0 +1,22 @@
+---
+  - name: Deploy Sample Django Project Container
+    hosts: servers
+    become: true
+
+    vars:
+      repo_url: "https://github.com/devops-donm/sample_django_project.git"
+      repo_path: "/opt/evalgenie/project"
+
+    tasks:
+      - name: Create sqlite directory for persistence
+        file:
+          path: "/opt/docker-volumes/sample_django_project/database/"
+          state: directory
+          mode: '0755'
+
+      - name: Clone the Project Repository
+        ansible.builtin.git:
+          repo: "{{ repo_url }}"
+          dest: "{{ repo_path }}"
+          version: main
+          force: yes
