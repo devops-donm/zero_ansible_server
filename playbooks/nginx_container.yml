@@ -16,7 +16,7 @@
 
       - name: Create NGINX SSL Certificates Directory
         file:
-          path: "/opt/nginx_docker_volume/certs/"
+          path: "/opt/docker_volume/nginx/certs/"
           state: directory
           mode: '0755'
 
