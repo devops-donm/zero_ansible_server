@@ -16,7 +16,7 @@
 
     - name: Create sqlite directory for persistence
       file:
-        path: "{{ project_path }}docker_volume/database/"
+        path: "/opt/docker_volume/sample_django_project/database/"
         state: directory
         mode: '0755'
 
