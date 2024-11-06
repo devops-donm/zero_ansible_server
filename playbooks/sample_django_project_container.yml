@@ -10,7 +10,7 @@
     tasks:
       - name: Create sqlite directory for persistence
         file:
-          path: "/opt/docker-volumes/sample_django_project/database/"
+          path: "/opt/docker-volume/sample_django_project/database/"
           state: directory
           mode: '0755'
 
