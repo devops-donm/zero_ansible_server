@@ -84,10 +84,6 @@ After running the hardening paybook you will only be asked for the sudoers passw
 `ansible-playbook playbooks/nginx_container.yml`
 
 ### Actions on node
-- Clone latest (main) version of NGINX repo
-
-https://github.com/devops-donm/one_nginx_docker.git
-
+- Clones the latest version of the [NGINX Container Repo](https://github.com/devops-donm/nginx_container)
 - Stop and remove the current container
-
 - Create a new NGINX container
