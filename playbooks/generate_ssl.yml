@@ -8,7 +8,6 @@
     key_file: "{{ cert_dir }}/{{ domain }}.key"
     cert_file: "{{ cert_dir }}/{{ domain }}.crt"
     days_valid: 365                       # Certificate validity in days
-    encryption_passphrase: "your_password_here"  # Password for the private key
 
   tasks:
     - name: Ensure certificate directory exists
@@ -17,22 +16,12 @@
         state: directory
         mode: '0755'
 
-    - name: Generate private key
+    - name: Generate private key without encryption
       command: >
-        openssl genpkey -algorithm RSA -out "{{ key_file }}" -aes256
-        -pass pass:"{{ encryption_passphrase }}"
+        openssl genpkey -algorithm RSA -out "{{ key_file }}"
       args:
         creates: "{{ key_file }}"
       register: gen_key
-      ignore_errors: yes
-
-    - name: Remove encryption for the private key if desired
-      command: >
-        openssl rsa -in "{{ key_file }}" -out "{{ key_file | regex_replace('\.key$', '_unencrypted.key') }}"
-      when: not encryption_passphrase
-      args:
-        creates: "{{ key_file | regex_replace('\.key$', '_unencrypted.key') }}"
-      register: unencrypted_key
       ignore_errors: yes
 
     - name: Generate self-signed certificate
