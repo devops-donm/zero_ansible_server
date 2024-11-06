@@ -28,20 +28,19 @@
           version: main  # Specify branch if needed
           force: yes  # Force re-download if repo already exists
   
-      # Step 3: Stop and remove any existing container using docker_compose module
+      # Step 3: Stop and remove any existing container using docker-compose
       - name: Stop existing Docker containers
-        community.docker.docker_compose:
-          project_src: "{{ repo_path }}"
-          state: absent
+        shell: docker-compose down
+        args:
+          chdir: "{{ repo_path }}"
         ignore_errors: true  # Ignore errors if container is not running
   
-      # Step 4: Build and start the new Docker container using docker_compose module
+      # Step 4: Build and start the new Docker container using docker-compose
       - name: Build and start new Docker containers
-        community.docker.docker_compose:
-          project_src: "{{ repo_path }}"
-          state: present
-          build: yes  # Build the container from scratch
-  
+        shell: docker-compose up -d --build
+        args:
+          chdir: "{{ repo_path }}"
+    
     handlers:
       - name: Restart Docker
         service:
