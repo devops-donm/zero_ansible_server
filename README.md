@@ -87,7 +87,10 @@ After running the hardening paybook you will only be asked for the sudoers passw
 
 ### Actions on node
 - Verifies / Creates the /opt/nginx/configs and /opt/nginx/certs directories are created
-    These are used for persistant storage to prevent data loss during container deployments.
+
+> [!NOTE]
+> These are used for persistant storage to prevent data loss during container deployments.
+
 - Clones the latest version of the [NGINX Container Repo](https://github.com/devops-donm/nginx_container)
 - Stop existing Docker containers
 - Build and start new Docker containers
