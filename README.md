@@ -66,9 +66,11 @@ ansible -i inventory/hosts all -m ping --ask-pass
 # Usage
 ## Hardening Playbook:
 You may be required to input both the user's password and the sudoers password.
+
 `ansible-playbook playbooks/srv_harden.yml --ask-pass --ask-become-pass`
 
 After running the hardening paybook you will only be asked for the sudoers password.
+
 `ansible-playbook playbooks/srv_harden.yml --ask-become-pass`
 
 ### Actions on node
