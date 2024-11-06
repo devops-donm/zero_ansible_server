@@ -85,6 +85,9 @@ After running the hardening paybook you will only be asked for the sudoers passw
 
 ### Actions on node
 - Clone latest (main) version of NGINX repo
+
 https://github.com/devops-donm/one_nginx_docker.git
+
 - Stop and remove the current container
+
 - Create a new NGINX container
