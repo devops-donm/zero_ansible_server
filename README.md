@@ -84,6 +84,8 @@ After running the hardening paybook you will only be asked for the sudoers passw
 `ansible-playbook playbooks/nginx_container.yml`
 
 ### Actions on node
+- Verifies / Creates the /opt/nginx/configs and /opt/nginx/certs directories are created
+    These are used for persistant storage to prevent data loss during container deployments.
 - Clones the latest version of the [NGINX Container Repo](https://github.com/devops-donm/nginx_container)
 - Stop and remove the current container
 - Create a new NGINX container
