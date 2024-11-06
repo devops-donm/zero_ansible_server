@@ -4,8 +4,9 @@
   become: true
 
   vars:
+    project_name: ""sample_django_project
     repo_url: "https://github.com/devops-donm/sample_django_project.git"
-    project_path: "/opt/sample_django_project/"
+    project_path: "/opt/{{ project_name }}/"
 
   tasks:
     - name: Ensure project directory exists
@@ -16,7 +17,7 @@
 
     - name: Create sqlite directory for persistence
       file:
-        path: "/opt/docker_volume/sample_django_project/database/"
+        path: "/opt/docker_volume/{{ project_name }}/database/"
         state: directory
         mode: '0755'
 
@@ -26,3 +27,13 @@
         dest: "{{ project_path }}"
         version: main
         force: yes
+
+    - name: Execute SSL generation script
+      ansible.builtin.shell: "/opt/{{ project_name }}/generate_ssl.sh"
+      args:
+        chdir: "/opt/{{ project_name }}"  # Set directory context if needed
+      register: ssl_output  # Store the command output in a variable for logging/debugging
+
+    - name: Display script output
+      ansible.builtin.debug:
+        var: ssl_output.stdout  # Print the standard output of the script execution
