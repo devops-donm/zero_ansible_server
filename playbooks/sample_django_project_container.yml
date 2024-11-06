@@ -4,19 +4,19 @@
   become: true
 
   vars:
-    project_name: ""sample_django_project
+    project_name: "sample_django_project"
     repo_url: "https://github.com/devops-donm/sample_django_project.git"
     project_path: "/opt/{{ project_name }}/"
 
   tasks:
     - name: Ensure project directory exists
-      file:
+      ansible.builtin.file:
         path: "{{ project_path }}"
         state: directory
         mode: '0755'
 
     - name: Create sqlite directory for persistence
-      file:
+      ansible.builtin.file:
         path: "/opt/docker_volume/{{ project_name }}/database/"
         state: directory
         mode: '0755'
