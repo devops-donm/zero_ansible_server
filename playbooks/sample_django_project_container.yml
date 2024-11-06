@@ -5,12 +5,12 @@
 
     vars:
       repo_url: "https://github.com/devops-donm/sample_django_project.git"
-      repo_path: "/opt/evalgenie/project"
+      repo_path: "/opt/"
 
     tasks:
       - name: Create sqlite directory for persistence
         file:
-          path: "/opt/docker-volume/sample_django_project/database/"
+          path: "/opt/docker_volume/sample_django_project/database/"
           state: directory
           mode: '0755'
 
