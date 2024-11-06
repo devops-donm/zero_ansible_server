@@ -47,7 +47,7 @@
     - name: Copy the configuration file
       copy:
         src: /opt/sample_django_project/test_local.conf
-        dest: /opt/docker_volume_nginx/configs/test_local.conf
+        dest: /opt/docker_volume/nginx/configs/test_local.conf
         remote_src: yes
         owner: root
         group: root
