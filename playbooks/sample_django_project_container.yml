@@ -5,9 +5,15 @@
 
     vars:
       repo_url: "https://github.com/devops-donm/sample_django_project.git"
-      repo_path: "/opt/"
+      repo_path: "/opt/sample_django_project/"
 
     tasks:
+    - name: Ensure project directory exists
+      file:
+        path: "{{ project_path }}"
+        state: directory
+        mode: '0755'
+
       - name: Create sqlite directory for persistence
         file:
           path: "/opt/docker_volume/sample_django_project/database/"
