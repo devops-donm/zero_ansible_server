@@ -37,9 +37,17 @@
     - name: Execute SSL generation script
       ansible.builtin.shell: "/opt/{{ project_name }}/generate_ssl.sh"
       args:
-        chdir: "/opt/{{ project_name }}"  # Set directory context if needed
-      register: ssl_output  # Store the command output in a variable for logging/debugging
+        chdir: "/opt/{{ project_name }}"
+      register: ssl_output
 
     - name: Display script output
       ansible.builtin.debug:
-        var: ssl_output.stdout  # Print the standard output of the script execution
+        var: ssl_output.stdout
+
+    - name: Copy the configuration file
+      copy:
+        src: /opt/sample_django_project/test_local.conf
+        dest: /opt/docker_volume_nginx/configs/test_local.conf
+        owner: root
+        group: root
+        mode: '0644'
