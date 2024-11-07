@@ -64,8 +64,12 @@
       args:
         chdir: "{{ project_path }}"
 
+    - name: Restart NGINX
+      meta: include_playbook: nginx_container.yml
+
   handlers:
     - name: Restart Docker
       ansible.builtin.service:
         name: docker
         state: restarted
+
