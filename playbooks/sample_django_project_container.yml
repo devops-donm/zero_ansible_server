@@ -53,66 +53,66 @@
         group: root
         mode: '0644'
 
-	- name: Ensure secrets directory exists for persistence
-	  ansible.builtin.file:
-		path: "/opt/docker_volume/{{ project_name }}/secrets/"
-		state: directory
-		mode: '0755'
+    - name: Ensure secrets directory exists for persistence
+      ansible.builtin.file:
+        path: "/opt/docker_volume/{{ project_name }}/secrets/"
+        state: directory
+        mode: '0755'
 
-	- name: Check if .env file exists
-	  ansible.builtin.stat:
-		path: "/opt/docker_volume/{{ project_name }}/secrets/.env"
-	  register: env_file_stat
+    - name: Check if .env file exists
+      ansible.builtin.stat:
+        path: "/opt/docker_volume/{{ project_name }}/secrets/.env"
+      register: env_file_stat
 
-	- name: Copy the sample .env file if it does not exist
-	  ansible.builtin.copy:
-		src: "/opt/sample_django_project/.env_sample"
-		dest: "/opt/docker_volume/{{ project_name }}/secrets/.env"
-		remote_src: yes
-		owner: root
-		group: root
-		mode: '0400'
-	  when: not env_file_stat.stat.exists
+    - name: Copy the sample .env file if it does not exist
+      ansible.builtin.copy:
+        src: "/opt/sample_django_project/.env_sample"
+        dest: "/opt/docker_volume/{{ project_name }}/secrets/.env"
+        remote_src: yes
+        owner: root
+        group: root
+        mode: '0400'
+      when: not env_file_stat.stat.exists
 
-	- name: Set up database configuration for .env file if new
-	  ansible.builtin.lineinfile:
-		path: "/opt/docker_volume/{{ project_name }}/secrets/.env"
-		regexp: "^POSTGRES_DB="
-		line: "POSTGRES_DB={{ db_name | default('django_db') }}"
-		create: yes
-	  when: not env_file_stat.stat.exists
+    - name: Set up database configuration for .env file if new
+      ansible.builtin.lineinfile:
+        path: "/opt/docker_volume/{{ project_name }}/secrets/.env"
+        regexp: "^POSTGRES_DB="
+        line: "POSTGRES_DB={{ db_name | default('django_db') }}"
+        create: yes
+      when: not env_file_stat.stat.exists
 
-	- name: Set up database user for .env file if new
-	  ansible.builtin.lineinfile:
-		path: "/opt/docker_volume/{{ project_name }}/secrets/.env"
-		regexp: "^POSTGRES_USER="
-		line: "POSTGRES_USER={{ db_user | default('django_user') }}"
-		create: yes
-	  when: not env_file_stat.stat.exists
+    - name: Set up database user for .env file if new
+      ansible.builtin.lineinfile:
+        path: "/opt/docker_volume/{{ project_name }}/secrets/.env"
+        regexp: "^POSTGRES_USER="
+        line: "POSTGRES_USER={{ db_user | default('django_user') }}"
+        create: yes
+      when: not env_file_stat.stat.exists
 
-	- name: Set up database password for .env file if new
-	  ansible.builtin.lineinfile:
-		path: "/opt/docker_volume/{{ project_name }}/secrets/.env"
-		regexp: "^POSTGRES_PASSWORD="
-		line: "POSTGRES_PASSWORD={{ db_password | default('secure_password') }}"
-		create: yes
-	  when: not env_file_stat.stat.exists
+    - name: Set up database password for .env file if new
+      ansible.builtin.lineinfile:
+        path: "/opt/docker_volume/{{ project_name }}/secrets/.env"
+        regexp: "^POSTGRES_PASSWORD="
+        line: "POSTGRES_PASSWORD={{ db_password | default('secure_password') }}"
+        create: yes
+      when: not env_file_stat.stat.exists
 
-	- name: Set up database host for .env file if new
-	  ansible.builtin.lineinfile:
-		path: "/opt/docker_volume/{{ project_name }}/secrets/.env"
-		regexp: "^POSTGRES_HOST="
-		line: "POSTGRES_HOST={{ db_host | default('db') }}"
-		create: yes
-	  when: not env_file_stat.stat.exists
+    - name: Set up database host for .env file if new
+      ansible.builtin.lineinfile:
+        path: "/opt/docker_volume/{{ project_name }}/secrets/.env"
+        regexp: "^POSTGRES_HOST="
+        line: "POSTGRES_HOST={{ db_host | default('db') }}"
+        create: yes
+      when: not env_file_stat.stat.exists
 
-	- name: Set Django settings for .env file if new
-	  ansible.builtin.lineinfile:
-		path: "/opt/docker_volume/{{ project_name }}/secrets/.env"
-		regexp: "^SECRET_KEY="
-		line: "SECRET_KEY={{ secret_key | default('your_secret_key') }}"
-		create: yes
-	  when: not env_file_stat.stat.exists
+    - name: Set Django settings for .env file if new
+      ansible.builtin.lineinfile:
+        path: "/opt/docker_volume/{{ project_name }}/secrets/.env"
+        regexp: "^SECRET_KEY="
+        line: "SECRET_KEY={{ secret_key | default('your_secret_key') }}"
+        create: yes
+      when: not env_file_stat.stat.exists
 
     - name: Stop existing Docker containers
       ansible.builtin.shell: "docker-compose down"
@@ -131,4 +131,4 @@
         name: docker
         state: restarted
 
-- import_playbook: nginx_container.yml  # Corrected syntax
+- import_playbook: nginx_container.yml
