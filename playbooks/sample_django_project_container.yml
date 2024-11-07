@@ -52,3 +52,20 @@
         owner: root
         group: root
         mode: '0644'
+
+      - name: Stop existing Docker containers
+        shell: docker-compose down
+        args:
+          chdir: "{{ project_path }}"
+        ignore_errors: true
+
+      - name: Build and start new Docker containers
+        shell: docker-compose up -d --build
+        args:
+          chdir: "{{ project_path }}"
+
+    handlers:
+      - name: Restart Docker
+        service:
+          name: docker
+          state: restarted
