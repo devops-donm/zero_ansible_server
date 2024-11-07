@@ -64,16 +64,6 @@
         path: "/opt/docker_volume/{{ project_name }}/secrets/.env"
       register: env_file_stat
 
-    - name: Copy the sample .env file if it does not exist
-      ansible.builtin.copy:
-        src: "/opt/sample_django_project/.env_sample"
-        dest: "/opt/docker_volume/{{ project_name }}/secrets/.env"
-        remote_src: yes
-        owner: root
-        group: root
-        mode: '0400'
-      when: not env_file_stat.stat.exists
-
     - name: Set up database configuration for .env file if new
       ansible.builtin.lineinfile:
         path: "/opt/docker_volume/{{ project_name }}/secrets/.env"
