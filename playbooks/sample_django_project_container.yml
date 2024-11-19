@@ -69,7 +69,7 @@
         mode: '0755'
 
     - name: Ensure .env file is updated
-      template:
+      ansible.builtin.template:
         src: configs/sample_django_project_env.j2
         dest: "/opt/docker_volume/{{ project_name }}/secrets/env"
         mode: '0640'
