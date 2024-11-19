@@ -72,7 +72,7 @@
       template:
         src: configs/sample_django_project_env.j2
         dest: "/opt/docker_volume/{{ project_name }}/secrets/env"
-      mode: '0640'
+        mode: '0640'
 
     - name: Stop existing Docker containers
       ansible.builtin.shell: "docker-compose down"
