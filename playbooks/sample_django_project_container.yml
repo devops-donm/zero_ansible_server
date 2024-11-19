@@ -4,9 +4,18 @@
   become: true
 
   vars:
+    # Project Variables
     project_name: "sample_django_project"
     repo_url: "https://github.com/devops-donm/sample_django_project.git"
     project_path: "/opt/{{ project_name }}/"
+
+    # Database Variables
+    postgres_db: custom_django_db
+    postgres_user: custom_django_user
+    postgres_password: super_secure_password
+    postgres_host: custom_db_host
+    django_debug: "True"
+    django_secret_key: custom_secret_key
 
   tasks:
     - name: Ensure project directory exists
@@ -59,10 +68,11 @@
         state: directory
         mode: '0755'
 
-    - name: Check if .env file exists
-      ansible.builtin.stat:
-        path: "/opt/docker_volume/{{ project_name }}/secrets/.env"
-      register: env_file_stat
+    - name: Ensure .env file is updated
+      template:
+        src: configs/sample_django_project_env.j2
+        dest: "/opt/docker_volume/{{ project_name }}/secrets/env"
+      mode: '0640'
 
     - name: Stop existing Docker containers
       ansible.builtin.shell: "docker-compose down"
