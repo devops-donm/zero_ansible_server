@@ -10,10 +10,12 @@
     project_path: "/opt/{{ project_name }}/"
 
     # Database Variables
-    postgres_db: custom_django_db
-    postgres_user: custom_django_user
+    # Edit these values as needed.
+    # If you add values here you will also need to update config/project_config.j2
+    postgres_db: django_db
+    postgres_user: django_user
     postgres_password: super_secure_password
-    postgres_host: custom_db_host
+    postgres_host: db
     django_debug: "True"
     django_secret_key: custom_secret_key
 
