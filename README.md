@@ -23,12 +23,6 @@ chmod 700 ~/.ssh
 chmod 600 ~/.ssh/authorized_keys
 ```
 
-### Copy the public key to each managed nodes
-```
-ssh-copy-id user@managed_node_ip
-```
-Replace user with your username and managed_node_ip with the IP address of the managed node.
-
 ## Clone this repo to your Control Server
 ```
 git clone https://github.com/devops-donm/zero_ansible_server.git
@@ -56,7 +50,7 @@ server1
 
 ## Test Connectivity to Managed Nodes
 ```
-ansible -i inventory/hosts all -m ping --ask-pass
+ansible -i inventory/hosts all -m ping -k
 ```
 
 ## Troubleshooting
@@ -67,7 +61,7 @@ ansible -i inventory/hosts all -m ping --ask-pass
 ## Hardening Playbook:
 You may be required to input both the user's password and the sudoers password.
 
-`ansible-playbook playbooks/srv_harden.yml --ask-pass --ask-become-pass`
+`ansible-playbook playbooks/srv_harden.yml -k -K`
 
 After running the hardening paybook you will only be asked for the sudoers password.
 
